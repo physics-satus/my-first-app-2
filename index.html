@@ -1,72 +1,404 @@
 <!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#f7f1e8" />
-  <title>말결 · 음성 받아쓰기</title>
-  <style>
-    :root{--paper:#f7f1e8;--paper-2:#fffaf3;--ink:#27221f;--muted:#766d65;--line:#dfd5ca;--coral:#df705c;--coral-dark:#b95042;--soft:#f1e1d8;--shadow:0 18px 50px rgba(69,45,30,.11)}
-    *{box-sizing:border-box} html{background:var(--paper);color:var(--ink)} body{margin:0;font-family:ui-serif,Georgia,"Noto Serif KR","Apple SD Gothic Neo",serif;min-width:300px} button,select{font:inherit} button{cursor:pointer} button:focus-visible,select:focus-visible{outline:3px solid rgba(223,112,92,.42);outline-offset:3px}
-    .shell{max-width:1160px;margin:auto;padding:34px 26px 42px}.top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:32px}.brand{letter-spacing:-.06em;font-size:27px;font-weight:800}.brand b{color:var(--coral);font-weight:800}.eyebrow{margin:0 0 7px;color:var(--coral-dark);font-family:ui-sans-serif,system-ui,sans-serif;font-size:11px;font-weight:750;letter-spacing:.15em}.top h1{font-size:clamp(28px,5vw,48px);line-height:1.05;letter-spacing:-.065em;margin:0;font-weight:750}.status{display:flex;align-items:center;gap:8px;white-space:nowrap;padding-top:9px;color:var(--muted);font-family:ui-sans-serif,system-ui,sans-serif;font-size:13px}.dot{width:8px;height:8px;border-radius:50%;background:#b9afa6}.dot.live{background:var(--coral);box-shadow:0 0 0 6px rgba(223,112,92,.15);animation:pulse 1.4s infinite}@keyframes pulse{50%{box-shadow:0 0 0 10px rgba(223,112,92,0)}}
-    .grid{display:grid;grid-template-columns:minmax(0,1fr) 295px;gap:22px}.panel{background:var(--paper-2);border:1px solid var(--line);box-shadow:var(--shadow)}.main{min-height:500px;display:flex;flex-direction:column}.panel-head{padding:19px 22px 15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center}.label{font-family:ui-sans-serif,system-ui,sans-serif;font-weight:700;font-size:12px;letter-spacing:.07em;color:var(--muted)}.timer{font-variant-numeric:tabular-nums;font-family:ui-monospace,SFMono-Regular,monospace;font-size:15px}.transcript-wrap{padding:27px 28px;flex:1;min-height:275px}.transcript{white-space:pre-wrap;overflow-wrap:anywhere;font-size:clamp(25px,3vw,39px);line-height:1.38;letter-spacing:-.055em}.placeholder{color:#aaa098}.interim{color:var(--coral-dark);font-style:italic}.caption-note{margin:19px 0 0;font-family:ui-sans-serif,system-ui,sans-serif;font-size:12px;color:var(--muted)}.controls{border-top:1px solid var(--line);padding:17px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}.control-set{display:flex;gap:9px;align-items:center}.btn{border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--ink);padding:10px 15px;font-family:ui-sans-serif,system-ui,sans-serif;font-size:13px;font-weight:700;transition:.18s}.btn:hover:not(:disabled){border-color:var(--ink);transform:translateY(-1px)}.btn:disabled{opacity:.4;cursor:not-allowed}.btn-primary{background:var(--coral);border-color:var(--coral);color:#fff;padding:12px 20px}.btn-primary:hover:not(:disabled){background:var(--coral-dark);border-color:var(--coral-dark)}.btn-stop{background:var(--ink);color:#fff;border-color:var(--ink)}.picker{background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:7px 20px 7px 0;color:var(--ink);font-family:ui-sans-serif,system-ui,sans-serif;font-size:13px}.picker:disabled{opacity:.55}.side{display:flex;flex-direction:column;gap:22px}.side .panel{padding:20px}.side h2{font-size:17px;margin:0 0 4px;letter-spacing:-.045em}.side p{font-family:ui-sans-serif,system-ui,sans-serif;font-size:12px;line-height:1.6;color:var(--muted);margin:0}.actions{display:grid;gap:8px;margin-top:17px}.actions .btn{text-align:left;padding:10px 12px}.sessions{list-style:none;margin:15px 0 0;padding:0;border-top:1px solid var(--line);max-height:210px;overflow:auto}.sessions li{padding:11px 0;border-bottom:1px solid var(--line);font-family:ui-sans-serif,system-ui,sans-serif}.session-time{display:block;font-size:11px;color:var(--muted);margin-bottom:4px}.session-text{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.privacy{margin:27px 3px 0;font-family:ui-sans-serif,system-ui,sans-serif;font-size:11px;line-height:1.65;color:var(--muted)}.notice{min-height:21px;padding:0 2px 13px;color:var(--coral-dark);font-family:ui-sans-serif,system-ui,sans-serif;font-size:12px}.modal[hidden]{display:none}.modal{position:fixed;inset:0;background:rgba(39,34,31,.36);display:grid;place-items:center;padding:20px;z-index:10}.dialog{max-width:390px;background:var(--paper-2);padding:26px;border:1px solid var(--line);box-shadow:var(--shadow)}.dialog h2{margin:0 0 10px;font-size:22px;letter-spacing:-.05em}.dialog p{margin:0 0 21px;font-family:ui-sans-serif,system-ui,sans-serif;font-size:13px;line-height:1.6;color:var(--muted)}.dialog-actions{display:flex;justify-content:flex-end;gap:9px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-    @media(max-width:780px){.shell{padding:23px 16px 30px}.top{margin-bottom:23px}.grid{grid-template-columns:1fr}.main{min-height:440px}.side{display:grid;grid-template-columns:1fr 1fr}.transcript-wrap{padding:23px 20px}.panel-head{padding:16px 20px}.controls{padding:14px 16px}.top .status{padding-top:4px}.brand{font-size:23px}}@media(max-width:530px){.top{display:block}.top .status{margin-top:14px}.side{display:block}.side .panel+ .panel{margin-top:18px}.control-set{width:100%;justify-content:space-between}.btn-primary{flex:1}.transcript{font-size:27px}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f7f1e8">
+<title>말결 · 실시간 음성 번역 자막</title>
+<style>
+:root{--paper:#f7f1e8;--card:#fffcf6;--ink:#302b27;--muted:#766b62;--line:#e4d9ce;--coral:#ca5e49;--coral-dark:#a94232;--peach:#f7e6db;--green:#3d705a;--shadow:0 12px 40px #59412b09}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;min-width:300px}button,input,select,textarea{font:inherit}button,summary{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.45}button,a,input,select,textarea,summary,video{outline-offset:4px} :focus-visible{outline:3px solid #c3654eb3}button{touch-action:manipulation}h1,h2,h3,p{margin:0}button{color:inherit}button:hover:not(:disabled){filter:brightness(.96)}[hidden]{display:none!important}.shell{max-width:1260px;margin:auto;padding:30px 30px 25px}.top{display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{font-size:28px;letter-spacing:-2px;font-weight:900}.brand span{color:var(--coral)}.brand small{font-weight:500;font-size:11px;letter-spacing:.04em;color:var(--muted);margin-left:13px}.pill{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:100px;padding:8px 12px;font-size:11px;font-weight:700;white-space:nowrap}.pill:before{content:"";width:6px;height:6px;border-radius:50%;background:#a99e94}.pill.on{color:var(--coral-dark);background:var(--peach);border-color:#dbb4a6}.pill.on:before{background:var(--coral)}.hero{padding:30px 0 24px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px}.eyebrow{font-size:11px;letter-spacing:.14em;font-weight:750;color:var(--coral);margin-bottom:11px}h1{font-size:clamp(30px,4.5vw,48px);line-height:1.23;letter-spacing:-.065em;font-weight:750}h1 em{font-style:normal;color:var(--coral)}.hero-note{max-width:260px;font-size:12px;line-height:1.8;color:var(--muted)}.layout{display:grid;grid-template-columns:340px minmax(0,1fr);gap:20px;align-items:start}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}.input-card{padding:20px}.section-label{font-size:10px;letter-spacing:.1em;font-weight:800;color:var(--coral);margin-bottom:7px}h2{font-size:18px;letter-spacing:-.045em}h3{font-size:14px;letter-spacing:-.025em}.tabs{display:flex;gap:4px;background:#eee7df;padding:4px;border-radius:12px;margin:17px 0}.tab{flex:1;border:0;background:transparent;border-radius:9px;padding:10px 5px;color:var(--muted);font-size:12px;font-weight:700}.tab[aria-selected="true"]{background:var(--card);color:var(--ink);box-shadow:0 2px 5px #4f342314}.file-zone{border:1px dashed #ceb4a3;border-radius:12px;background:#fbf4eb;padding:18px 13px;text-align:center}.file-zone strong{display:block;font-size:13px;margin-bottom:6px}.file-zone p,.small{font-size:11px;line-height:1.7;color:var(--muted)}input[type=file]{width:100%;font-size:11px;margin-top:12px;color:var(--muted)}input[type=file]::file-selector-button{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin-right:8px;color:var(--ink);cursor:pointer}.filename{font-size:11px;line-height:1.5;color:var(--muted);margin-top:10px;overflow-wrap:anywhere}video{display:block;width:100%;max-height:230px;background:#292520;border-radius:10px;margin-top:12px}.mic-art{height:138px;display:grid;place-items:center;background:#fbf4eb;border-radius:12px;margin-bottom:12px}.mic-symbol{width:66px;height:66px;border-radius:50%;border:1px solid #ddc2b1;background:#f7e6db;display:grid;place-items:center}.mic-symbol svg{width:28px;height:28px;stroke:var(--coral);fill:none;stroke-width:1.6}.mic-art.live .mic-symbol{box-shadow:0 0 0 13px #f6e6dba8;animation:breathe 2s ease-in-out infinite}@keyframes breathe{50%{box-shadow:0 0 0 20px #f6e6db55}}.languages{margin-top:20px;padding-top:18px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 18px 1fr;gap:8px;align-items:end}.languages label{font-size:11px;color:var(--muted);display:block;margin-bottom:7px}.languages select{width:100%;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:10px 7px;font-size:13px;color:var(--ink)}.arrow{padding-bottom:10px;text-align:center;color:var(--coral)}.btn{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px 13px;font-size:12px;font-weight:700}.primary{background:var(--coral);border-color:var(--coral);color:white}.dark{background:var(--ink);border-color:var(--ink);color:white}.wide{width:100%}.prepare{margin-top:14px}.model-status{margin-top:8px;min-height:33px;font-size:11px;line-height:1.6;color:var(--muted);overflow-wrap:anywhere}progress{width:100%;height:5px;accent-color:var(--coral);margin-top:8px}.start-controls{display:flex;gap:8px;margin-top:16px}.start-controls .primary{flex:1}.compat{margin-top:16px;border-top:1px solid var(--line);padding-top:14px;font-size:10px;line-height:1.8;color:var(--muted)}.compat strong{color:var(--coral-dark)}.subtitle-card{min-height:605px;display:flex;flex-direction:column;overflow:hidden}.caption-head{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:20px 24px}.caption-head h2{font-size:16px}.caption-head .small{font-size:10px;margin-top:4px}.clock{font-family:ui-monospace,monospace;font-size:14px;font-variant-numeric:tabular-nums;color:var(--muted)}.caption-stage{padding:0 24px;flex:1;min-height:365px;max-height:560px;overflow-y:auto;scrollbar-color:#d3c1b4 transparent;overscroll-behavior:contain}.empty{min-height:360px;display:flex;align-items:center;justify-content:center;text-align:center}.empty-mark{font-family:Georgia,serif;font-size:75px;color:#e8cab9;line-height:.8}.empty h3{font-size:21px;letter-spacing:-.06em;font-weight:600;margin-top:15px}.empty p{font-size:12px;line-height:1.9;color:var(--muted);margin-top:12px}.captions{list-style:none;padding:0;margin:0}.caption{border-bottom:1px solid var(--line);padding:21px 0}.caption:last-child{border:0}.caption-meta{display:flex;gap:9px;align-items:center;font-size:10px;color:var(--muted);margin-bottom:10px;flex-wrap:wrap}.caption-meta time{font-family:ui-monospace,monospace}.caption-meta .badge{background:#f1e9df;border-radius:4px;padding:2px 5px}.original{font-size:13px;color:var(--muted);line-height:1.75;white-space:pre-wrap;overflow-wrap:anywhere}.translated{font-size:24px;line-height:1.55;letter-spacing:-.04em;white-space:pre-wrap;overflow-wrap:anywhere;margin-top:6px}.translated.pending{font-size:13px;color:var(--muted)}.translated.failed{font-size:12px;color:var(--coral-dark)}.interim-box{margin:0 24px 18px;border-left:2px solid var(--coral);padding:8px 13px;background:#faf0e7}.interim-box span{font-size:10px;color:var(--coral-dark);display:block;margin-bottom:5px}.interim-box p{font-size:15px;line-height:1.7;overflow-wrap:anywhere;color:var(--muted)}.caption-footer{border-top:1px solid var(--line);padding:16px 24px;background:#fcf7f0}.footer-state{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;color:var(--muted);margin-bottom:12px}.live-dot{width:6px;height:6px;border-radius:50%;display:inline-block;background:#b4a79d;margin-right:7px}.live-dot.on{background:var(--coral)}.export-actions{display:flex;flex-wrap:wrap;gap:7px}.export-actions .btn{font-size:11px;padding:8px 11px}.export-actions .clear{margin-left:auto;color:var(--coral-dark)}.notice{font-size:12px;line-height:1.65;min-height:40px;border-radius:9px;background:#f0e7dc;padding:10px 14px;margin-top:16px;color:#665448}.notice.error{background:#fae5df;color:#9a382b}.test{margin-top:16px;padding:15px 20px}.test summary{font-size:12px;font-weight:700}.test-body{padding-top:14px}.test textarea{display:block;resize:vertical;width:100%;min-height:82px;border:1px solid var(--line);border-radius:8px;padding:11px;background:var(--card);color:var(--ink);margin:10px 0;font-size:13px}.test-result{border-left:2px solid var(--coral);padding-left:12px;margin-top:13px;font-size:14px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}.privacy{margin-top:24px;padding-top:18px;border-top:1px solid var(--line);font-size:10px;line-height:1.9;color:var(--muted)}.privacy strong{color:var(--ink);font-weight:600}dialog{max-width:420px;width:calc(100% - 36px);border:1px solid var(--line);border-radius:16px;padding:26px;background:var(--card);color:var(--ink);box-shadow:0 24px 100px #30231c33}dialog::backdrop{background:#30231c70}dialog h2{margin-bottom:12px}dialog p{font-size:13px;line-height:1.8;color:var(--muted)}.dialog-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:22px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}@media(max-width:850px){.shell{padding:22px 18px}.layout{grid-template-columns:290px minmax(0,1fr);gap:14px}.input-card{padding:16px}.caption-head,.caption-footer{padding:18px}.caption-stage{padding:0 18px}.hero-note{max-width:215px}.translated{font-size:21px}}@media(max-width:680px){.layout{grid-template-columns:1fr}.shell{padding:20px 15px}.brand small{display:none}.hero{display:block;padding:24px 0}.hero-note{max-width:none;margin-top:13px}.hero-note br{display:none}h1 br{display:none}.subtitle-card{min-height:440px}.caption-stage{min-height:260px;max-height:470px}.empty{min-height:275px}.input-card{padding:19px}.mic-art{height:105px}.file-zone{padding:14px}.languages{margin-top:16px;padding-top:15px}.compat{font-size:11px}.translated{font-size:23px}.privacy{font-size:11px}.caption-head .small{max-width:220px}.export-actions .clear{margin-left:0}.hero h1{max-width:420px}}@media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
+.status-pills{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.source-picker{display:flex;gap:7px;margin-bottom:13px}.source-picker .btn{flex:1;font-size:11px}.source-picker [aria-pressed="true"]{border-color:var(--coral);color:var(--coral-dark);background:var(--peach)}.youtube-url{width:100%;border:1px solid var(--line);background:var(--card);border-radius:9px;padding:10px;font-size:12px;color:var(--ink);margin:7px 0 9px}.youtube-player iframe{width:100%;aspect-ratio:16/9;display:block;border:0;border-radius:10px;background:#292520;margin-top:13px}.youtube-steps{padding:12px 12px 12px 28px;background:#fbf0e6;border-radius:10px;font-size:11px;color:var(--muted);line-height:1.8;margin:12px 0}.youtube-steps strong{color:var(--ink)}.youtube-note{font-size:10px;line-height:1.8;color:var(--coral-dark);margin-top:9px}
+</style>
 </head>
 <body>
-  <main class="shell">
-    <header class="top"><div><div class="brand">말<b>결</b></div><p class="eyebrow">세 가지 언어 · 실시간 받아쓰기</p><h1>말한 그대로,<br>조용히 받아 적습니다.</h1></div><div class="status"><span class="dot" id="dot"></span><span id="status">준비됨</span></div></header>
-    <div class="grid">
-      <section class="panel main" aria-labelledby="transcript-title">
-        <div class="panel-head"><span class="label" id="transcript-title">실시간 자막</span><time class="timer" id="timer" datetime="PT0S">00:00</time></div>
-        <div class="transcript-wrap"><div class="transcript placeholder" id="transcript" aria-live="polite">마이크를 누르고 말해 보세요.</div><p class="caption-note" id="captionNote">최종 문장과 인식 중인 문장을 구분해 보여드립니다.</p></div>
-        <div class="controls"><div class="control-set"><button class="btn btn-primary" type="button" id="startBtn">자막 시작</button><button class="btn btn-stop" type="button" id="stopBtn" disabled>중지</button><button class="btn" type="button" id="demoBtn">예시 보기</button></div><label class="sr-only" for="language">인식 언어</label><select class="picker" id="language" aria-label="인식 언어"><option value="ko-KR">한국어</option><option value="ja-JP">일본어</option><option value="en-US">영어</option></select></div>
-      </section>
-      <aside class="side">
-        <section class="panel"><h2>내보내기</h2><p>현재 세션의 최종 문장을 저장합니다.</p><div class="actions"><button class="btn" type="button" id="copyBtn" disabled>텍스트 복사</button><button class="btn" type="button" id="txtBtn" disabled>TXT 다운로드</button><button class="btn" type="button" id="srtBtn" disabled>SRT 다운로드</button><button class="btn" type="button" id="clearBtn" disabled>세션 지우기</button></div></section>
-        <section class="panel"><h2>세션 기록</h2><p>이 페이지를 열어 둔 동안만 표시됩니다.</p><ul class="sessions" id="sessions"><li id="emptySessions"><span class="session-text">아직 기록이 없습니다.</span></li></ul></section>
-      </aside>
-    </div>
-    <p class="privacy">번역 기능이 아닌 음성 인식 도구입니다. 음성은 브라우저의 인식 서비스로 전송될 수 있으며, 이 앱의 서버에는 저장되지 않습니다. Chrome 사용을 권장하며 HTTPS 연결과 마이크 권한이 필요합니다. 오디오는 파일로 녹음하지 않습니다. SRT 시간은 브라우저 인식 이벤트 기준의 근사치입니다. 새로고침하면 자막이 사라지므로 먼저 다운로드해 주세요.</p>
-    <div class="notice" id="notice" role="status" aria-live="polite"></div>
-  </main>
-  <div class="modal" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" hidden><div class="dialog"><h2 id="confirmTitle">세션을 지울까요?</h2><p>현재 받아쓴 내용과 세션 기록이 모두 지워집니다. 취소하면 데이터는 그대로 유지됩니다.</p><div class="dialog-actions"><button class="btn" type="button" id="cancelClear">취소</button><button class="btn btn-primary" type="button" id="confirmClear">지우기</button></div></div></div>
+<main class="shell">
+<header class="top"><div class="brand">말<span>결</span><small>목소리가 문장이 되는 곳</small></div><div class="status-pills"><span class="pill" id="sharePill" role="status">탭 공유 OFF</span><span class="pill" id="micPill" role="status">마이크 OFF</span></div></header>
+<section class="hero" aria-labelledby="title"><div><p class="eyebrow">한국어 · 일본어 · 영어</p><h1 id="title">목소리를 따라,<br><em>언어를 건너는 자막.</em></h1></div><p class="hero-note">로컬 영상·YouTube·마이크의 음성을 인식하고<br>확정된 문장마다 선택한 언어로 번역합니다.</p></section>
+<div class="layout">
+<aside>
+<section class="card input-card" aria-labelledby="inputTitle">
+<p class="section-label">01 / 소리와 언어</p><h2 id="inputTitle">어떤 목소리를 담을까요?</h2>
+<div class="tabs" role="tablist" aria-label="음성 입력 방식"><button class="tab" id="videoTab" type="button" role="tab" aria-controls="videoPanel" aria-selected="true" tabindex="0">영상</button><button class="tab" id="micTab" type="button" role="tab" aria-controls="micPanel" aria-selected="false" tabindex="-1">마이크</button></div>
+<div id="videoPanel" role="tabpanel" aria-labelledby="videoTab"><div class="source-picker" role="group" aria-label="영상 출처"><button type="button" class="btn" id="localSourceBtn" aria-pressed="true">로컬 파일</button><button type="button" class="btn" id="youtubeSourceBtn" aria-pressed="false">YouTube 링크</button></div><div id="localSourcePanel"><div class="file-zone"><strong>기기에 있는 영상을 선택하세요</strong><p>재생되는 영상의 소리만 인식합니다.<br>파일은 외부로 업로드하지 않습니다.</p><label class="sr-only" for="fileInput">로컬 영상 파일 선택</label><input id="fileInput" type="file" accept="video/*"></div><p class="filename" id="fileName">아직 선택한 영상이 없습니다.</p><div id="videoMount"><video id="video" controls playsinline preload="metadata" hidden aria-label="선택한 영상 미리보기"></video></div><p class="small" style="margin-top:9px">아래 ‘영상 자막 시작’으로 재생과 인식을 함께 시작하세요. 플레이어만 재생하면 자막은 생성되지 않습니다.</p></div>
+<div id="youtubeSourcePanel" hidden><label class="small" for="youtubeUrl">공개 YouTube 동영상 주소</label><input class="youtube-url" id="youtubeUrl" type="url" maxlength="2048" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://www.youtube.com/watch?v=…"><button type="button" class="btn wide" id="youtubeLoadBtn">링크 불러오기</button><p class="filename" id="youtubeStatus" role="status">링크를 불러올 때만 YouTube 플레이어에 연결합니다.</p><div class="youtube-player" id="youtubeMount"></div><ol class="youtube-steps"><li>링크를 불러오고 <strong>번역 준비</strong>와 <strong>음성 인식 준비</strong>를 각각 완료하세요.</li><li><strong>탭 오디오 공유 시작</strong>을 누르세요.</li><li>공유 창에서 <strong>이 앱이 열린 현재 탭</strong>을 선택하고 <strong>탭 오디오 공유</strong>를 체크하세요.</li><li>연결 후 <strong>YouTube 플레이어의 재생 버튼</strong>을 직접 누르세요.</li></ol><p class="youtube-note">탭 소리를 받으려면 화면·영상 공유 권한도 필요합니다. 앱은 오디오만 인식하며 공유 화면을 저장·업로드하지 않습니다. 탭의 다른 소리도 들어올 수 있습니다. 마이크는 켜지지 않습니다.</p><p class="small" style="margin-top:9px">비공개·연령 제한·임베드 금지 영상은 재생되지 않을 수 있습니다. 이 경우 재생 가능한 로컬 파일을 사용하세요. YouTube 자막이나 다운로드로 대체하지 않습니다. SRT는 공유 시작부터 누적된 시간이며 원본 영상의 재생 시간이 아닙니다. 광고의 음성도 인식될 수 있습니다.</p></div></div>
+<div id="micPanel" role="tabpanel" aria-labelledby="micTab" hidden><div class="mic-art" id="micArt" aria-hidden="true"><div class="mic-symbol"><svg viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="13" rx="4"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3M8 22h8"/></svg></div></div><h3>이 기기의 마이크로 말하기</h3><p class="small" style="margin-top:6px">‘마이크 ON’을 누를 때만 권한을 요청합니다. OFF 또는 탭을 벗어나면 마이크 입력을 해제합니다.</p></div>
+<div class="languages"><div><label for="sourceLang">말하는 언어</label><select id="sourceLang"><option value="ko">한국어</option><option value="ja">일본어</option><option value="en" selected>영어</option></select></div><div class="arrow" aria-hidden="true">→</div><div><label for="targetLang">자막 언어</label><select id="targetLang"><option value="ko" selected>한국어</option><option value="ja">일본어</option><option value="en">영어</option></select></div></div>
+<button type="button" id="prepareBtn" class="btn wide prepare">번역 준비 · 모델 확인</button><progress id="modelProgress" max="1" value="0" hidden aria-label="번역 모델 다운로드 진행률"></progress><p id="modelStatus" class="model-status" role="status">번역 준비를 누르면 필요한 모델을 확인합니다.</p>
+<button type="button" id="speechPrepareBtn" class="btn wide prepare">음성 인식 준비 · 기기 내 모델</button><progress id="speechProgress" hidden aria-label="기기 내 음성 인식 모델 준비 중"></progress><p id="speechStatus" class="model-status" role="status">말하는 언어의 음성 모델을 따로 준비해 주세요.</p>
+<div class="start-controls"><button type="button" class="btn primary" id="startBtn" disabled>영상 자막 시작</button><button type="button" class="btn dark" id="stopBtn" disabled>중지</button></div>
+<p class="compat" id="compat"></p>
+</section>
+<details class="card test"><summary>번역 테스트</summary><div class="test-body"><p class="small">음성 권한 없이 같은 실제 번역 모델을 시험합니다. 결과는 자막과 내보내기에 포함되지 않습니다.</p><label class="sr-only" for="testInput">말하는 언어로 시험할 문장</label><textarea id="testInput" placeholder="선택한 ‘말하는 언어’로 문장을 입력하세요." maxlength="5000"></textarea><button type="button" class="btn" id="testBtn" disabled>입력한 문장 번역</button><p class="small" id="testHelp" style="margin-top:8px">먼저 번역 준비를 완료해 주세요.</p><div class="test-result" id="testOutput" role="status" hidden></div></div></details>
+</aside>
+<section class="card subtitle-card" aria-labelledby="captionTitle">
+<div class="caption-head"><div><p class="section-label">02 / 실시간 번역 자막</p><h2 id="captionTitle">원문과 번역, 나란히</h2><p class="small">인식 중인 원문은 바로, 번역은 문장 확정 후 표시됩니다.</p></div><time class="clock" id="clock" datetime="PT0S">00:00</time></div>
+<div class="caption-stage" id="captionStage" tabindex="0" aria-label="확정된 원문과 번역 자막"><div class="empty" id="empty"><div><div class="empty-mark" aria-hidden="true">“</div><h3>아직, 조용한 문장들.</h3><p>영상을 선택하거나 마이크로 전환하고<br>번역을 준비한 뒤 시작해 보세요.</p></div></div><ol class="captions" id="captions" aria-label="확정 자막"></ol></div>
+<div class="interim-box" id="interimBox" hidden><span>인식 중인 원문 · 아직 저장되지 않았습니다</span><p id="interim" aria-live="off"></p></div>
+<div class="caption-footer"><div class="footer-state"><span><i class="live-dot" id="liveDot" aria-hidden="true"></i><span id="runStatus" role="status">입력 대기</span></span><span id="count">확정 0 · 저장 가능 0</span></div><div class="export-actions"><button class="btn" type="button" id="copyBtn" disabled>번역 복사</button><button class="btn" type="button" id="txtBtn" disabled>TXT 저장</button><button class="btn" type="button" id="srtBtn" disabled>SRT 저장</button><button class="btn clear" type="button" id="clearBtn">전체 지우기</button></div><p class="small" style="margin-top:10px">완료된 번역만 저장합니다. 같은 언어는 원문을 저장합니다. SRT 시간은 추정치입니다. YouTube는 공유 누적 시간이며 원본 영상 시간과 다릅니다.</p></div>
+</section>
+</div>
+<p class="notice" id="notice" role="status" aria-live="polite">번역 준비 전에는 마이크를 켜거나 음성을 전송하지 않습니다.</p>
+<footer class="privacy"><strong>로컬 영상은 기기에서, YouTube는 공식 임베드로 재생합니다.</strong> YouTube 링크를 불러오면 Google/YouTube에 연결되며 해당 서비스의 개인정보·쿠키 정책이 적용됩니다. 탭 공유는 화면 권한을 동반하지만 앱은 공유 화면을 녹화·저장·업로드하지 않습니다. 앱 서버로 영상·자막을 업로드하지 않습니다. 이 앱은 기기 내 음성 인식과 번역 모델만 사용하도록 요청하며 서버형 음성 인식으로 자동 전환하지 않습니다. 언어 모델 다운로드와 YouTube 재생에는 인터넷이 필요합니다. 첫 다운로드에는 시간과 데이터가 필요합니다. 현재 네이티브 번역은 데스크톱 Chrome 환경이 필요하며 휴대폰에서는 제한됩니다. 소리는 녹음 파일로 저장하지 않습니다. 탭을 숨기거나 영상을 일시 정지하면 인식을 중지하며, 미확정 원문은 저장하지 않습니다. 자막은 이 페이지의 메모리에만 남습니다. 새로고침하거나 닫기 전에 저장하세요.</footer>
+</main>
+<dialog id="confirmDialog" aria-labelledby="dialogTitle" aria-describedby="dialogText"><h2 id="dialogTitle">기존 자막을 지울까요?</h2><p id="dialogText"></p><div class="dialog-actions"><button type="button" class="btn" id="cancelDialog" autofocus>취소</button><button type="button" class="btn primary" id="acceptDialog">지우고 계속</button></div></dialog>
 <script>
 (() => {
 'use strict';
-const $=id=>document.getElementById(id);
-const ui={out:$('transcript'),timer:$('timer'),status:$('status'),dot:$('dot'),notice:$('notice'),start:$('startBtn'),stop:$('stopBtn'),demo:$('demoBtn'),lang:$('language'),copy:$('copyBtn'),txt:$('txtBtn'),srt:$('srtBtn'),clear:$('clearBtn'),history:$('sessions'),modal:$('confirmModal'),cancel:$('cancelClear'),confirm:$('confirmClear')};
-const API=window.SpeechRecognition||window.webkitSpeechRecognition;
-let rec=null,state='idle',captions=[],interim='',history=[],base=0,began=null,tick=null,segmentStart=null,runIndex=0,isDemo=false,hadError=false;
-const elapsed=()=>base+(began===null?0:performance.now()-began);
+const $ = id => document.getElementById(id);
+const names = {ko:'한국어',ja:'일본어',en:'영어'};
+const locales = {ko:'ko-KR',ja:'ja-JP',en:'en-US'};
+const SpeechAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+const ua = navigator.userAgent;
+const chromeVersion = Number((ua.match(/Chrome\/(\d+)/)||[])[1]||0);
+const desktop = !/Android|iPhone|iPad|iPod/i.test(ua) && !(navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
+// Conservative minimum: this track-input path is validated on desktop Chrome 153.
+// Do not use start() without a track, including on errors: that could activate a microphone.
+const trackCapable = Boolean(SpeechAPI && desktop && chromeVersion>=153 && !/Edg\/|OPR\//.test(ua) && window.isSecureContext);
+let mode='video', source='en', target='ko', records=[], epoch=0, serial=0;
+let translator=null, readyKey='', preparing=false, prepareGeneration=0;
+let speechReadyLocale='',speechPreparing=false,speechGeneration=0;
+const localSpeechCapable=Boolean(SpeechAPI && typeof SpeechAPI.available==='function' && typeof SpeechAPI.install==='function');
+const speechReady=()=>localSpeechCapable && speechReadyLocale===locales[source];
+let queue=Promise.resolve(), testBusy=false, testGeneration=0;
+let active=null, runId=0, micStream=null, micElapsed=0;
+let video=$('video'), fileURL='', selectedFile=null, graph=null;
+let videoSource='local', youtubeId='', youtubeFrame=null, displayStream=null, youtubeElapsed=0;
+const youtubeOrigin='https://www.youtube.com';
+const inputKind=()=>mode==='mic'?'mic':videoSource==='youtube'?'youtube':'video';
+let dialogResolve=null, dialogFocus=null;
+const key=()=>source+'>'+target;
+const same=()=>source===target;
+const ready=()=>same() || Boolean(translator && readyKey===key());
 const pad=(n,l=2)=>String(n).padStart(l,'0');
-const fullText=()=>captions.map(c=>c.text).join(' ');
-const notice=t=>ui.notice.textContent=t;
-function status(t,live=false){ui.status.textContent=t;ui.dot.classList.toggle('live',live);}
-function timer(){const ms=elapsed(),s=Math.floor(ms/1000);ui.timer.textContent=pad(Math.floor(s/60))+':'+pad(s%60);ui.timer.dateTime='PT'+s+'S';}
-function pause(){if(began!==null){base=elapsed();began=null;}clearInterval(tick);timer();}
-function buttons(){const busy=state!=='idle',has=captions.length>0;ui.start.disabled=busy||!API||!window.isSecureContext;ui.stop.disabled=state!=='listening';ui.lang.disabled=busy;ui.demo.disabled=busy;ui.copy.disabled=!has;ui.txt.disabled=!has;ui.srt.disabled=!has;ui.clear.disabled=busy||(!has&&!history.length);}
-function render(){ui.out.replaceChildren();const text=fullText();ui.out.className='transcript'+(!text&&!interim?' placeholder':'');if(!text&&!interim)ui.out.textContent='마이크를 누르고 말해 보세요.';else{ui.out.append(document.createTextNode(text));if(interim){const span=document.createElement('span');span.className='interim';span.textContent=(text?' ':'')+interim;ui.out.append(span);}}buttons();}
-function renderHistory(){ui.history.replaceChildren();if(!history.length){const li=document.createElement('li');li.textContent='아직 기록이 없습니다.';ui.history.append(li);}history.forEach(item=>{const li=document.createElement('li'),time=document.createElement('time'),text=document.createElement('div');time.className='session-time';time.dateTime=item.date.toISOString();time.textContent=item.date.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+' · '+item.lang;text.className='session-text';text.textContent=item.text;text.title=item.text;li.append(time,text);ui.history.append(li);});}
-function clearData(){captions=[];interim='';history=[];base=0;began=null;segmentStart=null;isDemo=false;clearInterval(tick);render();renderHistory();timer();status('준비됨');}
-function start(){if(state!=='idle'||!API)return;if(isDemo)clearData();state='starting';hadError=false;runIndex=captions.length;segmentStart=null;const language=ui.lang.options[ui.lang.selectedIndex].text;const instance=new API();rec=instance;instance.lang=ui.lang.value;instance.continuous=true;instance.interimResults=true;status('마이크 연결 중');notice('마이크 권한 요청이 나타나면 허용해 주세요.');buttons();
-instance.onstart=()=>{if(rec!==instance)return;state='listening';began=performance.now();tick=setInterval(timer,250);status('듣는 중',true);notice('선택한 언어로 말해 주세요. 다른 언어로 번역하지 않습니다.');buttons();};
-instance.onspeechstart=()=>{if(segmentStart===null)segmentStart=elapsed();};
-instance.onresult=event=>{if(rec!==instance)return;interim='';for(let i=event.resultIndex;i<event.results.length;i++){const result=event.results[i],text=result[0].transcript.trim();if(!text)continue;if(segmentStart===null)segmentStart=elapsed();if(result.isFinal){const last=captions[captions.length-1],startTime=Math.max(segmentStart,last?last.end:0),endTime=Math.max(startTime+1,elapsed());captions.push({start:startTime,end:endTime,text});segmentStart=null;}else interim+=(interim?' ':'')+text;}render();};
-instance.onerror=event=>{if(rec!==instance)return;hadError=true;const errors={'not-allowed':'마이크 권한이 거부되었습니다. 주소창의 사이트 권한에서 마이크를 허용한 뒤 다시 시작해 주세요.','service-not-allowed':'브라우저에서 음성 인식 서비스를 허용하지 않습니다. Chrome에서 다시 시도해 주세요.','audio-capture':'마이크를 찾지 못했습니다. 연결과 입력 장치를 확인해 주세요.','network':'음성 인식 서버에 연결하지 못했습니다. 인터넷 연결을 확인한 뒤 다시 시작해 주세요.','no-speech':'음성이 감지되지 않았습니다. 마이크를 확인하고 다시 시작해 주세요.','aborted':'음성 인식이 중지되었습니다.','language-not-supported':'선택한 언어를 이 브라우저에서 지원하지 않습니다.'};notice(errors[event.error]||'음성 인식 오류가 발생했습니다. Chrome에서 다시 시도해 주세요.');status('인식 오류');};
-instance.onend=()=>{if(rec!==instance)return;pause();const text=captions.slice(runIndex).map(c=>c.text).join(' ');if(text)history.unshift({text,date:new Date(),lang:language});rec=null;state='idle';interim='';segmentStart=null;status(hadError?'인식 중단':captions.length?'자막 완료':'준비됨');if(!hadError)notice('인식이 끝났습니다. 자막 시작을 누르면 이어서 받아씁니다.');renderHistory();render();};
-try{instance.start();}catch(error){rec=null;state='idle';status('시작 실패');notice('음성 인식을 시작하지 못했습니다. Chrome 및 마이크 권한을 확인해 주세요.');buttons();}}
-ui.start.addEventListener('click',start);ui.stop.addEventListener('click',()=>{if(state!=='listening'||!rec)return;state='stopping';status('마무리 중');buttons();rec.stop();});
-ui.demo.addEventListener('click',()=>{if(state!=='idle')return;if(captions.length&&!isDemo){notice('실제 자막을 보호하기 위해 예시로 덮어쓰지 않았습니다. 먼저 다운로드하고 세션을 지워 주세요.');return;}const samples={'ko-KR':['오늘의 생각을 천천히 기록합니다.','말은 사라져도, 문장은 남습니다.','이제 다음 아이디어를 정리해 볼까요?'],'ja-JP':['今日の思いをゆっくり記録します。','言葉は消えても、文章は残ります。','次のアイデアを考えてみましょう。'],'en-US':['Let’s capture today’s thoughts.','Words may fade, but our notes remain.','What shall we create next?']};captions=samples[ui.lang.value].map((text,i)=>({start:i*3000,end:i*3000+2600,text}));base=8600;isDemo=true;interim='';render();timer();status('예시 표시 중');notice('샘플 자막입니다. 실제 음성 인식 결과가 아닙니다. 자막 시작 시 예시는 자동으로 지워집니다.');});
-ui.lang.addEventListener('change',()=>{if(isDemo){clearData();notice('인식 언어를 변경했습니다. 예시 보기로 선택 언어의 샘플을 볼 수 있습니다.');}});
-ui.copy.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(fullText());notice('자막을 복사했습니다.');}catch{notice('복사 권한이 없습니다. TXT 다운로드를 이용해 주세요.');}});
-function download(ext,content){const blob=new Blob([content],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=(isDemo?'말결-예시':'말결-자막')+'.'+ext;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);notice(ext.toUpperCase()+' 파일 다운로드를 요청했습니다.');}
-function timestamp(ms){ms=Math.max(0,Math.floor(ms));return pad(Math.floor(ms/3600000))+':'+pad(Math.floor(ms%3600000/60000))+':'+pad(Math.floor(ms%60000/1000))+','+pad(ms%1000,3);}
-ui.txt.addEventListener('click',()=>download('txt',fullText()));ui.srt.addEventListener('click',()=>download('srt',captions.map((c,i)=>(i+1)+'\n'+timestamp(c.start)+' --> '+timestamp(c.end)+'\n'+c.text).join('\n\n')+'\n'));
-function dismiss(){ui.modal.hidden=true;ui.clear.focus();}
-ui.clear.addEventListener('click',()=>{ui.modal.hidden=false;ui.cancel.focus();});ui.cancel.addEventListener('click',dismiss);ui.confirm.addEventListener('click',()=>{ui.modal.hidden=true;clearData();notice('자막과 세션 기록을 지웠습니다.');(ui.start.disabled?ui.demo:ui.start).focus();});ui.modal.addEventListener('click',e=>{if(e.target===ui.modal)dismiss();});ui.modal.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();dismiss();}if(e.key==='Tab'){e.preventDefault();(document.activeElement===ui.cancel?ui.confirm:ui.cancel).focus();}});
-window.addEventListener('pagehide',()=>{clearInterval(tick);if(rec){const active=rec;rec=null;active.abort();}});
-render();renderHistory();timer();if(!API){status('브라우저 지원 필요');notice('이 브라우저는 음성 인식을 지원하지 않습니다. Chrome에서 열어 주세요. 예시와 내보내기는 이용할 수 있습니다.');}else if(!window.isSecureContext){status('보안 연결 필요');notice('마이크를 사용하려면 HTTPS 주소에서 열어 주세요.');}
+const displayTime=ms=>{const t=Math.max(0,Math.floor(ms/1000));return (t>=3600?pad(Math.floor(t/3600))+':':'')+pad(Math.floor(t/60)%60)+':'+pad(t%60);};
+const pendingCount=()=>records.filter(r=>r.state==='pending').length;
+const successes=()=>records.filter(r=>r.state==='done');
+const hasContent=()=>records.length>0 || Boolean($('testOutput').textContent);
+const locked=()=>Boolean(active || preparing || speechPreparing || testBusy || pendingCount());
+function notify(message,error=false){$('notice').textContent=message;$('notice').classList.toggle('error',error);}
+function model(message){$('modelStatus').textContent=message;}
+function currentTime(run=active){if(run?.stopTime!==undefined)return run.stopTime;const kind=run?.mode||inputKind();if(kind==='youtube')return youtubeElapsed+(run?.audioStarted?performance.now()-run.started:0);if(kind==='mic')return micElapsed+(run?.audioStarted?performance.now()-run.started:0);return Math.max(0,video.currentTime*1000||0);}
+function tick(){const ms=currentTime();$('clock').textContent=displayTime(ms);$('clock').dateTime='PT'+Math.floor(ms/1000)+'S';}
+function updateMic(){const on=Boolean(micStream?.getAudioTracks().some(t=>t.readyState==='live'));$('micPill').textContent='마이크 '+(on?'ON':'OFF');$('micPill').classList.toggle('on',on);$('micArt').classList.toggle('live',on);}
+function update(){
+ const busy=locked(), live=Boolean(active), count=successes().length;
+ $('sourceLang').disabled=busy;$('targetLang').disabled=busy;$('fileInput').disabled=busy;
+ $('videoTab').disabled=busy;$('micTab').disabled=busy;
+ for(const id of ['localSourceBtn','youtubeSourceBtn','youtubeUrl','youtubeLoadBtn'])$(id).disabled=busy;
+ $('prepareBtn').disabled=busy || same() || (!window.Translator) || !window.isSecureContext;
+ $('prepareBtn').textContent=preparing?'번역 모델 준비 중…':ready()?(same()?'같은 언어 · 원문 자막':'번역 준비 완료'):'번역 준비 · 모델 확인';
+ $('startBtn').disabled=live || preparing || speechPreparing || testBusy || !ready() || !speechReady() || !trackCapable || (inputKind()==='video'&&(!selectedFile||video.readyState<1)) || (inputKind()==='youtube'&&(!youtubeId||!navigator.mediaDevices?.getDisplayMedia)) || (mode==='mic'&&!navigator.mediaDevices?.getUserMedia);
+ $('startBtn').textContent=inputKind()==='youtube'?'탭 오디오 공유 시작':mode==='video'?'영상 자막 시작':'마이크 ON';
+ $('stopBtn').disabled=!live || Boolean(active?.stopping);$('stopBtn').textContent=mode==='mic'?'마이크 OFF':'중지';
+ $('clearBtn').disabled=Boolean(preparing || speechPreparing || dialogResolve);
+ $('speechPrepareBtn').disabled=busy || !localSpeechCapable || !trackCapable;
+ $('speechPrepareBtn').textContent=speechPreparing?'기기 내 음성 모델 준비 중…':speechReady()?'기기 내 음성 인식 준비 완료':'음성 인식 준비 · 기기 내 모델';
+ $('testBtn').disabled=!ready() || testBusy || Boolean(active) || preparing || !$('testInput').value.trim();
+ $('testInput').disabled=testBusy || Boolean(active) || preparing;
+ $('testHelp').textContent=ready()?(same()?'같은 언어입니다. 번역하지 않고 입력 원문을 표시합니다.':names[source]+' → '+names[target]+' · 실제 기기 내 번역'):'먼저 번역 준비를 완료해 주세요.';
+ for(const id of ['copyBtn','txtBtn','srtBtn'])$(id).disabled=!count;
+ $('count').textContent='확정 '+records.length+' · 저장 가능 '+count;
+ $('empty').hidden=records.length>0;
+ $('liveDot').classList.toggle('on',Boolean(active?.listening));
+ $('runStatus').textContent=active?(active.stopping?'마지막 문장 확정 중':active.listening?'음성 인식 중':active.restarting?'인식 다시 연결 중':'입력 연결 중'):pendingCount()?'입력 중지 · 번역 처리 중':records.length?'입력 중지':'입력 대기';
+ updateMic();updateShare();tick();
+}
+function resetSpeech(){speechGeneration++;speechPreparing=false;speechReadyLocale='';$('speechProgress').hidden=true;$('speechStatus').textContent=localSpeechCapable?'말하는 언어의 기기 내 음성 모델을 준비해 주세요. 서버형 인식으로 대체하지 않습니다.':'이 브라우저에는 기기 내 음성 모델 설치 API가 없습니다. 최신 데스크톱 Chrome의 기능 지원을 확인해 주세요. 음성 입력은 비활성화됩니다.';}
+$('speechPrepareBtn').addEventListener('click',async()=>{
+ if(locked()||!localSpeechCapable||!trackCapable)return;
+ if(speechReady()){notify(names[source]+' 기기 내 음성 인식 모델이 이미 준비되었습니다.');return;}
+ const locale=locales[source],generation=++speechGeneration;speechPreparing=true;$('speechProgress').hidden=false;$('speechProgress').removeAttribute('value');$('speechStatus').textContent='기기 내 음성 모델을 확인하고 있습니다…';update();
+ try{
+  const options={langs:[locale],processLocally:true};let availability=await SpeechAPI.available(options);if(generation!==speechGeneration)return;
+  if(availability==='unavailable')throw new Error('speech-unavailable');
+  if(availability!=='available'){
+   $('speechStatus').textContent=names[source]+' 음성 모델을 다운로드하고 있습니다. 브라우저가 진행률을 제공하지 않습니다.';
+   const installed=await SpeechAPI.install(options);if(generation!==speechGeneration)return;if(!installed)throw new Error('speech-install');
+   availability=await SpeechAPI.available(options);if(generation!==speechGeneration)return;
+  }
+  if(availability!=='available')throw new Error('speech-install');speechReadyLocale=locale;$('speechStatus').textContent=names[source]+' 기기 내 음성 인식 준비 완료 · 서버형 인식 사용 안 함';notify('선택한 언어의 실제 기기 내 음성 모델이 준비되었습니다. 번역도 준비되었다면 입력을 시작하세요.');
+ }catch(error){if(generation!==speechGeneration)return;speechReadyLocale='';const message=error.message==='speech-unavailable'?'이 브라우저에서 선택한 언어의 기기 내 음성 인식을 사용할 수 없습니다.':error.name==='NotAllowedError'?'음성 모델 설치가 허용되지 않았습니다. 이 페이지를 직접 열고 음성 인식 준비 버튼을 다시 눌러 주세요.':'기기 내 음성 모델을 준비하지 못했습니다. 인터넷·저장 공간·Chrome 기능과 정책을 확인한 뒤 다시 눌러 주세요.';$('speechStatus').textContent=message;notify(message,true);}
+ finally{if(generation===speechGeneration){speechPreparing=false;$('speechProgress').hidden=true;update();}}
+});
+function resetModel(){prepareGeneration++;preparing=false;const old=translator;translator=null;readyKey='';try{old?.destroy();}catch{}$('modelProgress').hidden=true;model(same()?'같은 언어입니다. 번역 없이 원문 자막을 만듭니다.':!window.Translator?'이 브라우저에는 네이티브 번역 기능이 없습니다. 데스크톱 Chrome에서 열어 주세요.':'번역 준비를 누르면 필요한 모델을 확인합니다.');}
+function setInterim(text){$('interim').textContent=text;$('interimBox').hidden=!text;}
+function askDiscard(text){
+ if(dialogResolve)return Promise.resolve(false);
+ dialogFocus=document.activeElement;$('dialogText').textContent=text;
+ return new Promise(resolve=>{dialogResolve=resolve;$('confirmDialog').showModal();update();});
+}
+function finishDialog(value){if(!dialogResolve)return;const resolve=dialogResolve;dialogResolve=null;$('confirmDialog').close();update();if(dialogFocus?.isConnected)dialogFocus.focus();resolve(value);}
+$('cancelDialog').addEventListener('click',()=>finishDialog(false));
+$('acceptDialog').addEventListener('click',()=>finishDialog(true));
+$('confirmDialog').addEventListener('cancel',e=>{e.preventDefault();finishDialog(false);});
+function clearCaptions(){epoch++;records=[];queue=Promise.resolve();testGeneration++;testBusy=false;$('captions').replaceChildren();$('testOutput').textContent='';$('testOutput').hidden=true;setInterim('');micElapsed=0;youtubeElapsed=0;update();}
+function releaseMic(){const stream=micStream;micStream=null;if(stream)for(const t of stream.getTracks()){t.onended=null;t.stop();}updateMic();}
+function updateShare(){const on=Boolean(displayStream?.getTracks().some(t=>t.readyState==='live'));$('sharePill').textContent='탭 공유 '+(on?'ON':'OFF');$('sharePill').classList.toggle('on',on);}
+function releaseDisplay(){const stream=displayStream;displayStream=null;if(stream)for(const track of stream.getTracks()){track.onended=null;track.stop();}updateShare();}
+function youtubeCommand(func,args=[]){try{youtubeFrame?.contentWindow?.postMessage(JSON.stringify({event:'command',func,args}),youtubeOrigin);}catch{}}
+function pauseYoutube(){youtubeCommand('pauseVideo');}
+function clearYoutube(){pauseYoutube();releaseDisplay();youtubeFrame?.remove();youtubeFrame=null;youtubeId='';$('youtubeUrl').value='';$('youtubeStatus').textContent='링크를 불러올 때만 YouTube 플레이어에 연결합니다.';}
+function parseYouTubeURL(value){
+ let url;try{url=new URL(value.trim());}catch{throw new Error('youtube-url');}
+ const allowed=new Set(['youtube.com','www.youtube.com','m.youtube.com','music.youtube.com','youtu.be','youtube-nocookie.com','www.youtube-nocookie.com']);
+ if(!['https:','http:'].includes(url.protocol)||!allowed.has(url.hostname)||url.username||url.password||url.port)throw new Error('youtube-url');
+ let id='';
+ if(url.hostname==='youtu.be'){const match=url.pathname.match(/^\/([A-Za-z0-9_-]{11})\/?$/);id=match?.[1]||'';}
+ else if(url.pathname==='/watch'||url.pathname==='/watch/'){if(url.hostname.includes('youtube-nocookie')||url.searchParams.getAll('v').length!==1)throw new Error('youtube-url');id=url.searchParams.get('v')||'';}
+ else{const match=url.pathname.match(/^\/(shorts|live|embed)\/([A-Za-z0-9_-]{11})\/?$/);if(match&&(!url.hostname.includes('youtube-nocookie')||match[1]==='embed'))id=match[2];}
+ if(!/^[A-Za-z0-9_-]{11}$/.test(id))throw new Error('youtube-url');return id;
+}
+async function changeVideoSource(next){
+ if(!['local','youtube'].includes(next)||next===videoSource||locked())return;
+ if(hasContent()&&!await askDiscard('영상 출처를 바꾸면 시간 기준이 달라져 기존 자막과 테스트 결과를 지웁니다. 필요한 결과를 먼저 저장하세요.'))return;
+ stopRun('');video.pause();pauseYoutube();disposeGraph();clearCaptions();videoSource=next;
+ $('localSourcePanel').hidden=next!=='local';$('youtubeSourcePanel').hidden=next!=='youtube';$('localSourceBtn').setAttribute('aria-pressed',String(next==='local'));$('youtubeSourceBtn').setAttribute('aria-pressed',String(next==='youtube'));update();
+ notify(next==='youtube'?'YouTube 링크를 불러온 뒤 이 앱 탭의 오디오를 직접 공유해 주세요. 마이크는 사용하지 않습니다.':'로컬 영상의 오디오를 인식합니다. 마이크는 사용하지 않습니다.');
+}
+$('localSourceBtn').addEventListener('click',()=>changeVideoSource('local'));$('youtubeSourceBtn').addEventListener('click',()=>changeVideoSource('youtube'));
+$('youtubeLoadBtn').addEventListener('click',async()=>{
+ if(locked())return;let id;try{id=parseYouTubeURL($('youtubeUrl').value);}catch{notify('올바른 YouTube 주소를 입력해 주세요. youtube.com의 watch·shorts·live·embed 또는 youtu.be의 11자리 영상 ID 링크만 허용합니다.',true);return;}
+ if(hasContent()&&!await askDiscard('YouTube 영상을 불러오면 기존 자막과 테스트 결과를 지웁니다. 필요한 결과를 먼저 저장하세요.'))return;
+ stopRun('');clearCaptions();pauseYoutube();youtubeFrame?.remove();youtubeId=id;
+ const frame=document.createElement('iframe');youtubeFrame=frame;frame.id='youtubeFrame';frame.title='YouTube 동영상 플레이어 · '+id;frame.referrerPolicy='strict-origin-when-cross-origin';frame.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';frame.allowFullscreen=true;
+ frame.src=youtubeOrigin+'/embed/'+id+'?enablejsapi=1&origin='+encodeURIComponent(location.origin)+'&playsinline=1&rel=0';
+ frame.addEventListener('load',()=>{if(youtubeFrame!==frame)return;try{frame.contentWindow.postMessage(JSON.stringify({event:'listening',id:'youtubeFrame',channel:'widget'}),youtubeOrigin);}catch{}youtubeCommand('addEventListener',['onStateChange']);youtubeCommand('addEventListener',['onError']);});
+ $('youtubeMount').append(frame);$('youtubeUrl').value='https://www.youtube.com/watch?v='+id;$('youtubeStatus').textContent='공식 YouTube 플레이어 · '+id+' · 재생 가능 여부는 플레이어에서 확인하세요.';update();notify('YouTube 플레이어를 불러왔습니다. 번역 준비 후 이 앱 탭과 탭 오디오를 공유하고, 플레이어를 직접 재생하세요.');
+});
+$('youtubeUrl').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();$('youtubeLoadBtn').click();}});
+window.addEventListener('message',event=>{
+ if(!youtubeFrame||event.origin!==youtubeOrigin||event.source!==youtubeFrame.contentWindow)return;
+ let data=event.data;if(typeof data==='string'){try{data=JSON.parse(data);}catch{return;}}if(!data||typeof data!=='object')return;
+ if(data.event==='onReady'){youtubeCommand('addEventListener',['onStateChange']);youtubeCommand('addEventListener',['onError']);}
+ if(data.event==='onError'){if(active?.mode==='youtube')stopRun('',true);$('youtubeStatus').textContent='이 영상을 임베드 플레이어에서 재생할 수 없습니다.';notify('YouTube 재생이 제한되었거나 영상을 찾을 수 없습니다. 재생 가능한 로컬 파일을 사용해 주세요.',true);return;}
+ const state=data.event==='onStateChange'?data.info:data.event==='infoDelivery'?data.info?.playerState:undefined;
+ const run=active;if(run?.mode!=='youtube')return;
+ if(state===1){if(run.stopping){pauseYoutube();return;}run.youtubePlayed=true;}
+ if((state===0||state===2)&&run.youtubePlayed&&!run.stopping)finishInput(state===0?'YouTube 재생이 끝나 탭 공유를 해제했습니다.':'YouTube 재생이 일시 정지되어 탭 공유를 해제했습니다. 다시 시작하려면 공유를 다시 허용하세요.');
+});
+function cleanRecognition(run){
+ clearTimeout(run.retryTimer);clearTimeout(run.startTimer);clearTimeout(run.flushTimer);
+ const rec=run.rec;run.rec=null;
+ if(rec){rec.onstart=null;rec.onend=null;rec.onerror=null;rec.onresult=null;rec.onspeechstart=null;rec.onspeechend=null;try{rec.abort();}catch{}}
+}
+function stopRun(message='입력을 중지했습니다. 확정된 문장은 계속 번역합니다.',error=false){
+ const run=active;active=null;runId++;
+ if(run?.sawSpeech && !run.sawResult){message+=' 소리는 감지했지만 음성 인식기가 문장을 반환하지 않았습니다. 이 브라우저의 기기 내 음성 인식 호환성을 확인해 주세요.';error=true;}
+ if(run){if(run.mode==='mic'&&run.audioStarted)micElapsed=run.stopTime??(micElapsed+Math.max(0,performance.now()-run.started));if(run.mode==='youtube'&&run.audioStarted)youtubeElapsed=run.stopTime??(youtubeElapsed+Math.max(0,performance.now()-run.started));clearInterval(run.clock);cleanRecognition(run);if(run.track)run.track.onended=null;}
+ releaseMic();releaseDisplay();pauseYoutube();
+ if(run?.mode==='video'){video.pause();if(graph?.ctx.state==='running')graph.ctx.suspend().catch(()=>{});}
+ setInterim('');update();if(message)notify(message,error);
+}
+function finishInput(message='입력을 중지했습니다. 확정된 문장은 계속 번역합니다.'){
+ const run=active;if(!run || run.stopping)return;
+ if(!run.rec || !run.listening){stopRun(message);return;}
+ run.stopTime=currentTime(run);run.stopping=true;run.listening=false;run.endMessage=message;
+ clearTimeout(run.retryTimer);clearTimeout(run.startTimer);clearInterval(run.clock);
+ if(run.track)run.track.onended=null;
+ // Release the physical microphone immediately; only already-buffered recognition can finish.
+ if(run.mode==='mic')releaseMic();
+ if(run.mode==='youtube'){releaseDisplay();pauseYoutube();}
+ if(run.mode==='video'){video.pause();if(graph?.ctx.state==='running')graph.ctx.suspend().catch(()=>{});}
+ update();notify('소리 입력을 중지했습니다. 마지막 문장 확정을 최대 3초 기다립니다.');
+ run.flushTimer=setTimeout(()=>{if(active===run)stopRun(message+' 확정되지 않은 마지막 원문은 저장하지 않았습니다.');},3000);
+ try{run.rec.stop();}catch{stopRun(message);}
+}
+function bindVideo(){
+ video.addEventListener('loadedmetadata',update);
+ video.addEventListener('pause',()=>{if(active?.mode==='video' && active.videoStarted && video.paused)finishInput('영상이 일시 정지되어 인식도 중지했습니다. 확정된 자막은 유지됩니다.');});
+ video.addEventListener('ended',()=>{if(active?.mode==='video')finishInput('영상이 끝났습니다. 확정된 문장의 번역이 완료되면 저장하세요.');});
+ video.addEventListener('seeking',()=>{if(active?.mode==='video' && video.seeking)stopRun('재생 위치가 바뀌어 인식을 중지했습니다. 원하는 위치에서 다시 시작하세요.');});
+ video.addEventListener('timeupdate',()=>{if(inputKind()==='video')tick();});
+ video.addEventListener('play',()=>{if(active?.mode==='video'&&active.stopping){video.pause();return;}if(!active && graph?.ctx.state==='suspended')graph.ctx.resume().catch(()=>notify('영상 소리를 재생하지 못했습니다. 자막 시작을 눌러 다시 시도해 주세요.',true));});
+ video.addEventListener('error',()=>{if(active?.mode==='video')stopRun('',true);notify('이 영상을 재생할 수 없습니다. Chrome에서 지원하는 코덱의 다른 영상 파일을 선택해 주세요.',true);});
+}
+function disposeGraph(rebuild=true){
+ video.pause();const old=graph;graph=null;
+ if(old){old.dest.stream.getTracks().forEach(t=>{t.onended=null;t.stop();});try{old.source.disconnect();}catch{}try{old.dest.disconnect();}catch{}old.ctx.close().catch(()=>{});}
+ if(rebuild && old){const replacement=video.cloneNode(false);video.removeAttribute('src');video.load();video.replaceWith(replacement);video=replacement;bindVideo();if(fileURL)video.src=fileURL;video.hidden=!fileURL;}
+}
+function clearFile(){disposeGraph(false);video.removeAttribute('src');video.load();if(fileURL)URL.revokeObjectURL(fileURL);fileURL='';selectedFile=null;const replacement=video.cloneNode(false);video.replaceWith(replacement);video=replacement;video.hidden=true;bindVideo();$('fileInput').value='';$('fileName').textContent='아직 선택한 영상이 없습니다.';}
+function addRecord(text,run){
+ const now=currentTime(run), previous=records.at(-1);
+ const floor=previous?previous.end:run.boundary;
+ const begin=Math.max(0,floor,run.phraseStart??run.boundary);
+ const end=Math.max(begin+1,run.phraseEnd??now);
+ const record={id:++serial,text,translated:'',source,target,start:begin,end,state:same()?'done':'pending',error:'',epoch};
+ if(same())record.translated=text;
+ records.push(record);run.boundary=end;run.phraseStart=null;run.phraseEnd=null;
+ const stage=$('captionStage'), follow=stage.scrollHeight-stage.scrollTop-stage.clientHeight<90;
+ const row=document.createElement('li');row.className='caption';record.node=row;
+ const meta=document.createElement('div');meta.className='caption-meta';
+ const time=document.createElement('time');time.textContent=displayTime(begin);time.dateTime='PT'+(begin/1000).toFixed(3)+'S';
+ const badge=document.createElement('span');badge.className='badge';badge.textContent=names[source]+' → '+names[target]+(same()?' · 원문':'')+(run.mode==='youtube'?' · 공유 시간':'');
+ meta.append(time,badge);const original=document.createElement('p');original.className='original';original.lang=source;original.textContent=text;original.setAttribute('aria-label','확정 원문');
+ const translated=document.createElement('p');translated.lang=target;translated.setAttribute('aria-label',same()?'원문 자막':'번역 자막');record.output=translated;
+ row.append(meta);if(!same())row.append(original);row.append(translated);$('captions').append(row);renderRecord(record);update();if(follow)stage.scrollTop=stage.scrollHeight;
+ if(!same())enqueueTranslation(record);
+}
+function renderRecord(record){record.output.className='translated'+(record.state==='pending'?' pending':record.state==='failed'?' failed':'');record.output.textContent=record.state==='pending'?'문장을 번역하고 있습니다…':record.state==='failed'?record.error:record.translated;}
+function enqueueTranslation(record){
+ const engine=translator, generation=epoch;
+ queue=queue.catch(()=>{}).then(async()=>{
+  if(generation!==epoch)return;
+  try{if(!engine || engine!==translator)throw new Error('not-ready');const result=await engine.translate(record.text);if(generation!==epoch)return;if(typeof result!=='string'||!result.trim())throw new Error('empty-result');record.translated=result.trim();record.state='done';}
+  catch(error){if(generation!==epoch)return;record.state='failed';record.error='번역하지 못했습니다. 이 문장은 내보내기에서 제외됩니다.';notify('일부 문장을 번역하지 못했습니다. 원문은 남아 있으며 완료된 번역만 저장됩니다.',true);}
+  if(generation===epoch){renderRecord(record);update();}
+ });
+}
+const recognitionErrors={
+ 'not-allowed':'음성 인식 권한이 거부되었습니다. 사이트 권한과 브라우저 음성 인식 설정을 확인해 주세요.',
+ 'service-not-allowed':'브라우저가 음성 인식 서비스를 허용하지 않습니다. Chrome 설정 또는 관리 정책을 확인해 주세요.',
+ 'audio-capture':'입력 오디오를 읽을 수 없습니다. 마이크 또는 영상의 오디오 트랙을 확인해 주세요.',
+ 'network':'기기 내 음성 인식에서 네트워크 오류가 보고되었습니다. Chrome과 음성 모델 상태를 확인해 주세요. 서버형 인식으로 대체하지 않았습니다.',
+ 'no-speech':'음성이 감지되지 않아 중지했습니다. 선택한 언어와 영상의 소리 또는 마이크 입력을 확인해 주세요.',
+ 'aborted':'브라우저에서 음성 인식을 중단했습니다. 다시 시작해 주세요.',
+ 'language-not-supported':'선택한 언어의 기기 내 음성 모델을 사용할 수 없습니다. 음성 인식 준비를 다시 눌러 주세요.',
+ 'bad-grammar':'음성 인식 설정을 처리하지 못했습니다. 최신 Chrome에서 다시 시도해 주세요.'
+};
+function attachRecognition(run){
+ if(active!==run || document.hidden)return;
+ if(!run.track || run.track.kind!=='audio' || run.track.readyState!=='live'){stopRun('오디오 트랙이 종료되어 인식을 중지했습니다.',true);return;}
+ let rec;
+ try{rec=new SpeechAPI();}catch{stopRun('음성 인식기를 만들지 못했습니다. 최신 데스크톱 Chrome에서 다시 시도해 주세요.',true);return;}
+ run.rec=rec;const seen=new Set();rec.lang=locales[source];rec.processLocally=true;rec.continuous=true;rec.interimResults=true;rec.maxAlternatives=1;
+ const valid=()=>active===run && run.rec===rec;
+ rec.onstart=()=>{if(!valid())return;clearTimeout(run.startTimer);run.listening=true;run.restarting=false;update();notify(run.mode==='youtube'?'탭 오디오 인식이 연결되었습니다. 이 앱의 YouTube 플레이어에서 직접 재생을 누르세요. 마이크는 OFF입니다.':run.mode==='video'?'영상 오디오만 인식 중입니다. 마이크는 켜지지 않습니다.':'마이크의 실제 음성을 인식 중입니다. 확정된 문장부터 번역합니다.');if(run.mode==='video' && video.paused){run.videoStarted=true;video.play().catch(()=>{if(valid())stopRun('영상을 재생하지 못했습니다. 파일 형식과 브라우저 재생 권한을 확인해 주세요.',true);});}};
+ rec.onspeechstart=()=>{if(valid()){run.sawSpeech=true;if(run.phraseStart===null){run.phraseStart=currentTime(run);run.phraseEnd=null;}}};
+ rec.onspeechend=()=>{if(valid())run.phraseEnd=currentTime(run);};
+ rec.onresult=event=>{
+  if(!valid())return;
+  const partial=[];
+  for(let i=0;i<event.results.length;i++){
+   const result=event.results[i], text=result[0]?.transcript?.trim();if(!text)continue;run.sawResult=true;
+   if(result.isFinal){if(!seen.has(i)){seen.add(i);addRecord(text,run);run.retries=0;}}
+   else partial.push(text);
+  }
+  setInterim(partial.join(' '));
+ };
+ rec.onerror=event=>{if(!valid())return;if(event.error==='language-not-supported')resetSpeech();if(run.stopping){stopRun(run.endMessage);return;}stopRun(recognitionErrors[event.error]||'음성 인식 오류로 중지했습니다. 브라우저 지원과 입력 장치를 확인해 주세요.',true);};
+ rec.onend=()=>{
+  if(!valid())return;if(run.stopping){stopRun(run.endMessage);return;}clearTimeout(run.startTimer);run.rec=null;run.listening=false;setInterim('');run.phraseStart=null;run.phraseEnd=null;
+  if(document.hidden || run.track.readyState!=='live' || (run.mode==='video'&&(video.paused||video.ended))){stopRun('입력이 종료되어 인식을 중지했습니다.');return;}
+  if(run.retries>=3){stopRun('음성 인식 연결이 반복해서 종료되어 중지했습니다. 브라우저와 기기 내 음성 모델을 확인한 뒤 직접 다시 시작해 주세요.',true);return;}
+  const wait=400*Math.pow(2,run.retries++);run.restarting=true;update();notify('음성 인식 연결을 다시 시도합니다. 재연결 동안의 소리는 놓칠 수 있습니다.');
+  run.retryTimer=setTimeout(()=>{if(active===run)attachRecognition(run);},wait);
+ };
+ try{
+  // The supplied live audio track is mandatory. NEVER use the zero-argument overload.
+  rec.start(run.track);
+  run.startTimer=setTimeout(()=>{if(valid()&&!run.listening)stopRun('음성 인식 연결 시간이 초과되었습니다. 브라우저 권한과 기기 내 음성 모델을 확인해 주세요.',true);},20000);
+ }catch(error){stopRun(error.name==='InvalidStateError'?'오디오 트랙 인식을 시작할 수 없습니다. 오디오 트랙이 살아 있는지 확인하고 다시 시도해 주세요.':'이 브라우저에서 오디오 트랙 음성 인식을 시작하지 못했습니다. 실험 기능 지원 여부를 확인해 주세요. 마이크로 대신 연결하지 않았습니다.',true);}
+}
+async function startInput(){
+ if(active || preparing || speechPreparing || testBusy || !ready() || !speechReady() || !trackCapable)return;
+ const kind=inputKind();
+ if(kind==='video'&&!selectedFile)return;
+ if(kind==='youtube'&&(!youtubeId||!navigator.mediaDevices?.getDisplayMedia)){notify('YouTube 탭 오디오 공유는 getDisplayMedia를 지원하는 데스크톱 Chrome이 필요합니다.',true);return;}
+ if(kind==='video'&&video.ended){video.currentTime=0;notify('영상이 끝난 상태입니다. 처음으로 이동했습니다. 다시 시작해 주세요.');return;}
+ if(kind==='video' && records.length && video.currentTime*1000<records.at(-1).end-150){
+  const ok=await askDiscard('이전 자막보다 앞선 재생 위치입니다. 시간 순서를 유지하기 위해 기존 자막을 지우고 시작합니다. 필요한 자막은 먼저 저장하세요.');if(!ok)return;clearCaptions();
+ }
+ if(document.hidden){notify('이 탭이 보이는 상태에서 시작해 주세요.',true);return;}
+ const run={id:++runId,mode:kind,track:null,rec:null,listening:false,restarting:false,retries:0,started:performance.now(),audioStarted:false,videoStarted:false,boundary:kind==='video'?video.currentTime*1000:kind==='youtube'?youtubeElapsed:micElapsed,phraseStart:null,phraseEnd:null,retryTimer:null,startTimer:null,clock:null};
+ active=run;update();notify(kind==='youtube'?'공유 창에서 이 앱이 열린 현재 탭을 선택하고 탭 오디오 공유를 체크하세요. 화면 공유도 함께 요청됩니다.':kind==='mic'?'마이크 권한을 요청하고 있습니다. 중지를 누르면 연결을 취소합니다.':'영상 오디오를 연결하고 있습니다. 마이크 권한은 요청하지 않습니다.');
+ try{
+  if(run.mode==='mic'){
+   const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+   if(active!==run || document.hidden){stream.getTracks().forEach(t=>t.stop());return;}
+   micStream=stream;run.started=performance.now();run.audioStarted=true;run.track=stream.getAudioTracks()[0];updateMic();
+  }else if(run.mode==='youtube'){
+   // This call stays in the explicit start-button handler, before any awaited operation.
+   const stream=await navigator.mediaDevices.getDisplayMedia({video:true,audio:true,preferCurrentTab:true,selfBrowserSurface:'include',systemAudio:'exclude'});
+   if(active!==run||document.hidden){stream.getTracks().forEach(track=>track.stop());if(active===run)stopRun('탭이 숨겨져 공유를 취소했습니다. 이 앱 탭에서 직접 다시 시작하세요.');return;}
+   displayStream=stream;updateShare();
+   const sharedVideo=stream.getVideoTracks()[0],settings=sharedVideo?.getSettings?.();
+   if(settings?.displaySurface&&settings.displaySurface!=='browser')throw new Error('not-tab');
+   run.track=stream.getAudioTracks().find(track=>track.readyState==='live');
+   if(!run.track)throw new Error('no-tab-audio');
+   if(!sharedVideo||sharedVideo.readyState!=='live')throw new Error('share-ended');
+   run.started=performance.now();run.audioStarted=true;
+   for(const track of stream.getTracks())track.onended=()=>{if(active===run)finishInput('브라우저에서 탭 공유가 종료되어 모든 공유 트랙을 해제했습니다.');};
+   $('youtubeStatus').textContent='탭 공유 연결 · 현재 앱 탭을 선택했는지 확인하고 YouTube 플레이어를 재생하세요.';
+  }else{
+   if(video.readyState<1)throw new Error('media-loading');
+   video.pause();
+   if(!graph){const AudioAPI=window.AudioContext||window.webkitAudioContext;if(!AudioAPI)throw new Error('audio-api');const ctx=new AudioAPI();let node;try{node=ctx.createMediaElementSource(video);const dest=ctx.createMediaStreamDestination();node.connect(dest);node.connect(ctx.destination);graph={ctx,source:node,dest};}catch(error){node?.disconnect();ctx.close().catch(()=>{});throw error;}}
+   const currentGraph=graph;await currentGraph.ctx.resume();if(active!==run){if(!(active?.mode==='video' && graph===currentGraph) && currentGraph.ctx.state==='running')currentGraph.ctx.suspend().catch(()=>{});return;}
+   run.track=currentGraph.dest.stream.getAudioTracks()[0];
+  }
+  if(!run.track || run.track.readyState!=='live')throw new Error('track-ended');
+  run.track.onended=()=>{if(active!==run)return;if(run.mode==='youtube')finishInput('탭 오디오 공유가 종료되어 모든 공유 트랙을 해제했습니다.');else stopRun('입력 오디오가 연결 해제되었습니다.',true);};
+  run.clock=setInterval(tick,250);attachRecognition(run);update();
+ }catch(error){if(active!==run)return;if(run.mode==='youtube'){const errors={'not-tab':'전체 화면이나 창이 아닌 이 앱이 열린 브라우저 탭을 선택해 주세요. 공유를 모두 해제했습니다.','no-tab-audio':'공유된 오디오가 없습니다. 이 앱이 열린 현재 탭을 선택하고 탭 오디오 공유를 체크한 뒤 다시 시작하세요. 화면 공유도 모두 해제했습니다.','share-ended':'선택한 탭의 공유가 종료되었습니다. 이 앱 탭을 다시 선택해 주세요.',NotAllowedError:'탭 공유를 취소했거나 권한이 거부되었습니다. 다시 시작하여 이 앱 탭과 탭 오디오 공유를 선택해 주세요.',NotReadableError:'탭 소리를 읽을 수 없습니다. 브라우저·운영체제의 화면 공유 권한을 확인해 주세요.',InvalidStateError:'이 앱 탭이 보이는 상태에서 탭 오디오 공유 시작 버튼을 직접 눌러 주세요.'};stopRun(errors[error.message]||errors[error.name]||'탭 오디오 공유를 시작하지 못했습니다. 데스크톱 Chrome과 화면 공유 권한을 확인해 주세요. 마이크로 대체하지 않았습니다.',true);return;}const messages={NotAllowedError:'마이크 권한이 거부되었습니다. 사이트 권한에서 허용한 뒤 마이크 ON을 눌러 주세요.',NotFoundError:'사용할 수 있는 마이크가 없습니다. 입력 장치를 연결해 주세요.',NotReadableError:'마이크를 사용할 수 없습니다. 다른 앱의 사용 여부를 확인해 주세요.','media-loading':'영상 정보를 아직 읽지 못했습니다. 잠시 기다린 뒤 다시 시작하거나 다른 파일을 선택해 주세요.','audio-api':'이 브라우저에서 영상 오디오 추출을 지원하지 않습니다.','track-ended':'입력 오디오 트랙이 종료되었습니다. 다시 시작해 주세요.'};stopRun(messages[error.name]||messages[error.message]||'오디오 입력을 준비하지 못했습니다. 파일 형식, 장치 또는 브라우저 지원을 확인해 주세요.',true);}
+}
+$('prepareBtn').addEventListener('click',async()=>{
+ if(locked() || same() || ready())return;
+ if(!window.isSecureContext || !window.Translator){notify('번역에는 보안 연결과 네이티브 Translator를 지원하는 데스크톱 Chrome이 필요합니다.',true);return;}
+ preparing=true;const generation=++prepareGeneration;const pair=key();update();$('modelProgress').hidden=false;$('modelProgress').removeAttribute('value');model('언어 모델 사용 가능 여부를 확인하고 있습니다…');notify('브라우저 번역 모델을 준비합니다. 첫 사용 시 모델이 다운로드됩니다.');
+ let created=null;
+ try{
+  const availability=await window.Translator.availability({sourceLanguage:source,targetLanguage:target});
+  if(generation!==prepareGeneration)return;
+  if(availability==='unavailable')throw new Error('unavailable');
+  model(availability==='available'?'모델을 불러오고 있습니다…':'필요한 번역 모델을 다운로드하고 있습니다…');
+  created=await window.Translator.create({sourceLanguage:source,targetLanguage:target,monitor(monitor){monitor.addEventListener('downloadprogress',event=>{if(generation!==prepareGeneration)return;let ratio=Number(event.loaded);if(event.total>0)ratio=event.loaded/event.total;if(Number.isFinite(ratio)&&ratio>=0&&ratio<=1){$('modelProgress').value=ratio;model('번역 모델 다운로드 '+Math.round(ratio*100)+'%'+(ratio>=1?' · 모델을 여는 중…':''));}else model('번역 모델을 다운로드하고 있습니다…');});}});
+  if(generation!==prepareGeneration || pair!==key()){created.destroy();created=null;return;}
+  translator=created;created=null;readyKey=pair;model(names[source]+' → '+names[target]+' 번역 준비 완료 · 기기 내 실행');notify('실제 번역 모델이 준비되었습니다. 음성 입력 또는 번역 테스트를 시작하세요.');
+ }catch(error){try{created?.destroy();}catch{}if(generation!==prepareGeneration)return;readyKey='';translator=null;const text=error.message==='unavailable'?'이 기기에서 선택한 언어 쌍의 번역 모델을 사용할 수 없습니다.':error.name==='NotAllowedError'?'모델 준비 권한이 없습니다. 이 페이지를 직접 연 뒤 번역 준비 버튼을 다시 눌러 주세요.':'번역 모델을 준비하지 못했습니다. 최신 데스크톱 Chrome, 인터넷 연결, 저장 공간 및 브라우저 정책을 확인하고 다시 눌러 주세요.';model(text);notify(text,true);}
+ finally{if(generation===prepareGeneration){preparing=false;$('modelProgress').hidden=true;update();}}
+});
+async function changePair(){
+ const nextSource=$('sourceLang').value,nextTarget=$('targetLang').value;
+ $('sourceLang').value=source;$('targetLang').value=target;
+ if(locked())return;
+ if(nextSource===source && nextTarget===target)return;
+ if(hasContent() && !await askDiscard('언어를 바꾸면 기존 자막과 번역 테스트 결과를 지웁니다. 필요한 결과를 먼저 저장하세요.'))return;
+ stopRun('');clearCaptions();const sourceChanged=source!==nextSource;source=nextSource;target=nextTarget;if(sourceChanged)resetSpeech();$('sourceLang').value=source;$('targetLang').value=target;resetModel();update();notify(same()?'같은 언어를 선택했습니다. 번역 없이 실제 원문 자막을 표시합니다.':'언어를 변경했습니다. 새 언어 쌍의 번역 준비를 눌러 주세요.');
+}
+$('sourceLang').addEventListener('change',changePair);$('targetLang').addEventListener('change',changePair);
+async function changeMode(next){
+ if(next===mode||locked())return;
+ if(hasContent()&&!await askDiscard('입력 방식을 바꾸면 시간 기준이 달라져 기존 자막과 테스트 결과를 지웁니다. 필요한 결과를 먼저 저장하세요.'))return;
+ stopRun('');video.pause();disposeGraph();clearCaptions();mode=next;
+ for(const value of ['video','mic']){const selected=value===mode;$(value+'Tab').setAttribute('aria-selected',String(selected));$(value+'Tab').tabIndex=selected?0:-1;$(value+'Panel').hidden=!selected;}
+ update();notify(mode==='mic'?'마이크 ON을 누르기 전에는 마이크를 사용하지 않습니다.':inputKind()==='youtube'?'이 앱 탭을 오디오와 함께 공유하여 YouTube 소리를 인식합니다.':'로컬 영상의 오디오를 인식합니다. 마이크를 사용하지 않습니다.');
+}
+$('videoTab').addEventListener('click',()=>changeMode('video'));$('micTab').addEventListener('click',()=>changeMode('mic'));
+for(const id of ['videoTab','micTab'])$(id).addEventListener('keydown',event=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){event.preventDefault();const next=event.key==='Home'?'video':event.key==='End'?'mic':mode==='video'?'mic':'video';$(next+'Tab').focus();changeMode(next);}});
+$('fileInput').addEventListener('change',async()=>{
+ const file=$('fileInput').files[0];$('fileInput').value='';if(!file||locked())return;
+ if(file.type && !file.type.startsWith('video/')){notify('영상 파일을 선택해 주세요. 실제 재생 가능 여부는 영상 코덱에 따라 다릅니다.',true);return;}
+ if(hasContent()&&!await askDiscard('다른 영상을 열면 기존 자막과 번역 테스트 결과를 지웁니다. 필요한 결과를 먼저 저장하세요.'))return;
+ stopRun('');clearCaptions();clearFile();selectedFile=file;fileURL=URL.createObjectURL(file);video.src=fileURL;video.hidden=false;video.load();$('fileName').textContent=file.name+' · '+(file.size/1024/1024).toFixed(1)+' MB';update();notify('영상이 선택되었습니다. 번역을 준비한 뒤 영상 자막 시작을 눌러 주세요.');
+});
+$('startBtn').addEventListener('click',startInput);$('stopBtn').addEventListener('click',()=>finishInput());
+$('testInput').addEventListener('input',update);
+$('testBtn').addEventListener('click',async()=>{
+ const text=$('testInput').value.trim();if(!text || !ready() || testBusy || active || preparing)return;
+ const generation=++testGeneration, dataEpoch=epoch, engine=translator;
+ testBusy=true;$('testOutput').hidden=false;$('testOutput').textContent=same()?'원문을 표시하고 있습니다…':'실제 번역 모델로 번역 중입니다…';update();
+ try{const result=same()?text:await engine.translate(text);if(generation!==testGeneration||dataEpoch!==epoch)return;if(typeof result!=='string'||!result.trim())throw new Error('empty');$('testOutput').textContent=(same()?'원문 · 번역하지 않음':names[source]+' → '+names[target]+' · 실제 번역')+'\n'+result.trim();notify('번역 테스트를 완료했습니다. 테스트 결과는 자막에 추가하지 않았습니다.');}
+ catch(error){if(generation===testGeneration&&dataEpoch===epoch){$('testOutput').textContent='번역 테스트에 실패했습니다. 모델 준비 상태와 브라우저를 확인해 주세요.';notify('실제 번역 모델이 결과를 반환하지 못했습니다.',true);}}
+ finally{if(generation===testGeneration){testBusy=false;update();}}
+});
+$('clearBtn').addEventListener('click',async()=>{
+ if(preparing||speechPreparing)return;
+ if((hasContent()||selectedFile||youtubeId||active||$('testInput').value) && !await askDiscard('자막, 테스트 입력, 선택한 영상과 번역 모델 연결을 모두 해제합니다. 마이크·탭 공유·인식도 중지합니다. 이 작업은 되돌릴 수 없습니다.'))return;
+ stopRun('');clearCaptions();clearFile();clearYoutube();$('testInput').value='';resetSpeech();resetModel();update();notify('자막을 지우고 마이크·탭 공유·영상 오디오·번역 모델 연결을 해제했습니다.');
+});
+function exportText(){return successes().map(r=>r.translated).join('\n');}
+function srtTime(ms){const n=Math.max(0,Math.round(ms));return pad(Math.floor(n/3600000))+':'+pad(Math.floor(n/60000)%60)+':'+pad(Math.floor(n/1000)%60)+','+pad(n%1000,3);}
+function saveFile(text,extension,mime){const blob=new Blob(['\uFEFF',text],{type:mime+';charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='말결_'+source+'-'+target+'_'+new Date().toISOString().replace(/[:.]/g,'-')+'.'+extension;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);notify('완료된 '+successes().length+'개 자막의 '+extension.toUpperCase()+' 다운로드를 요청했습니다.');}
+$('copyBtn').addEventListener('click',async()=>{const text=exportText();if(!text)return;try{await navigator.clipboard.writeText(text);notify('완료된 번역 자막을 복사했습니다.');}catch{notify('클립보드 접근이 차단되었습니다. TXT 저장을 이용해 주세요.',true);}});
+$('txtBtn').addEventListener('click',()=>{if(successes().length)saveFile(exportText(),'txt','text/plain');});
+$('srtBtn').addEventListener('click',()=>{const done=successes();if(!done.length)return;const content=done.map((r,i)=>(i+1)+'\n'+srtTime(r.start)+' --> '+srtTime(r.end)+'\n'+r.translated.replace(/\r/g,'').replace(/\n\s*\n/g,'\n')).join('\n\n')+'\n';saveFile(content,'srt','application/x-subrip');});
+document.addEventListener('visibilitychange',()=>{if(document.hidden && active)stopRun('탭이 숨겨져 음성 입력·마이크·탭 공유를 모두 해제했습니다. 돌아온 뒤 직접 다시 시작해 주세요.');if(document.hidden){video.pause();pauseYoutube();releaseDisplay();if(graph?.ctx.state==='running')graph.ctx.suspend().catch(()=>{});}});
+window.addEventListener('pagehide',()=>{stopRun('');epoch++;testGeneration++;testBusy=false;for(const r of records){if(r.state==='pending'){r.state='failed';r.error='페이지를 떠나 번역이 취소되었습니다.';renderRecord(r);}}resetSpeech();resetModel();clearFile();clearYoutube();update();});
+window.addEventListener('beforeunload',event=>{if(records.length || active || testBusy){event.preventDefault();event.returnValue='';}});
+bindVideo();
+$('compat').textContent=trackCapable?'오디오 트랙 입력: 데스크톱 Chrome 153 이상 환경입니다. 영상·마이크 트랙 음성 인식은 브라우저의 실험적 기능이며 설정·정책에 따라 실패할 수 있습니다. 실패해도 영상 대신 마이크를 켜지 않습니다.':'음성 입력은 이 앱에서 확인된 데스크톱 Chrome 153 이상 + HTTPS에서만 활성화됩니다. 오디오 트랙 인식은 실험 기능으로 브라우저 설정에 따라 지원이 다릅니다. 모바일에서는 지원하지 않습니다. 네이티브 번역이 있다면 텍스트 테스트만 이용할 수 있습니다.';
+resetSpeech();resetModel();update();
 })();
 </script>
 </body>
